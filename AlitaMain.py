@@ -22,8 +22,10 @@ connected = False
 def connect():
     print(timestamp("connecting"))
     ircsock.connect((server, 6667))
+
     readmessages = threading.Thread(target=readmsg, daemon=True)
     readmessages.start()
+
     print(timestamp("send USER"))
     ircsock.send(bytes("USER " + botnick + " " + botnick + " " + botnick + " " + botnick + "\n", "UTF-8"))
     print(timestamp("send NICK"))
@@ -83,10 +85,12 @@ def parse_servermsg(msg):
 
     if reply_or_cmd == "MODE":
         print(timestamp("mode: " + msg))
+
         return
 
     elif reply_or_cmd == "NOTICE":
         print(timestamp("notice: " + msg))
+
         return
 
     print(timestamp(msg))
@@ -96,6 +100,7 @@ def parsemsg(msg):
     if msg.find("PING :") != -1:
         message = msg.split(':', 1)[1]
         ping(message)
+
         return
 
     if msg.find("PRIVMSG") != -1:
@@ -184,6 +189,7 @@ def main():
     sendmsg("oh...okay. :'(")
     print(timestamp("quitting"))
     ircsock.send(bytes("QUIT \n", "UTF-8"))
+    
     return
 
 
