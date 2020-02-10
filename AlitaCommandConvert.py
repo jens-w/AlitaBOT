@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import re
 import AlitaGeneralTools
+import importlib
 
 
 def convert(name, text):
@@ -337,7 +338,7 @@ def convert_what_to_what(how_many, what, to_what=""):
 
     tonne = {"tonne", "metricton"}
     kilogram = {"kg", "kilogram"}
-    gram = {"g","gr", "gram"}
+    gram = {"g", "gr", "gram"}
     milligram = {"mg", "milligram"}
     imperial_ton = {"imperialton"}
     us_ton = {"uston"}
@@ -422,7 +423,7 @@ def convert_what_to_what(how_many, what, to_what=""):
             return str(how_many / 1016 / 1000) + " imperial ton"
 
         if to_what in us_ton:
-            return str(how_many / 907 /  1000) + " US ton"
+            return str(how_many / 907 / 1000) + " US ton"
 
         if to_what in stone:
             return str(how_many / 6350) + " stone"
@@ -616,3 +617,9 @@ def convert_what_to_what(how_many, what, to_what=""):
         return "wrong argument: " + to_what
 
     return "wrong argument: " + what
+
+
+modules = {"AlitaGeneralTools"}
+
+for module in modules:
+    importlib.reload(importlib.import_module(module))

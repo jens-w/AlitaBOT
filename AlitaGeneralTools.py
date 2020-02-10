@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import re
 
 
 def double_spaces_to_single_space(text):

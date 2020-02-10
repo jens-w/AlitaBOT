@@ -139,9 +139,12 @@ def parsemsg(msg):
                 print(timestamp(name + " : " + message))
 
                 if command in AlitaCommands.commands:
-                    reply = AlitaCommands.commands[command](name, text)
+                    if text != "" and text is not None:
+                        reply = AlitaCommands.commands[command](name, text)
+                    else:
+                        reply = AlitaCommands.commands[command](name)
 
-                    if reply != "":
+                    if reply != "" and reply is not None:
                         sendmsg(reply)
 
                 return
