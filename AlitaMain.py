@@ -107,6 +107,7 @@ def parse_servermsg(msg):
 # parse all messages from server
 def parsemsg(msg):
     if msg.find("PING :") != -1:
+        print(timestamp(msg))
         message = msg.split(':', 1)[1]
         ping(message)
 
