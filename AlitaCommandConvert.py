@@ -1,26 +1,11 @@
 #!/usr/bin/python3
 import re
-
-
-def double_spaces_to_single_space(text):
-    if text.find("  ") != -1:
-        text = text.replace("  ", " ")
-        double_spaces_to_single_space(text)
-
-    return text
-
-
-def remove_starting_space(text):
-    if text.startswith(" "):
-        text = text.replace(" ", "", 1)
-        remove_starting_space(text)
-
-    return text
+import AlitaGeneralTools
 
 
 def convert(name, text):
-    text = double_spaces_to_single_space(text)
-    text = remove_starting_space(text)
+    text = AlitaGeneralTools.double_spaces_to_single_space(text)
+    text = AlitaGeneralTools.remove_starting_space(text)
     error_nan = name + ": not a number: "
     error_notastring = name + ": not a string: "
     error_arguments = name + ": cannot parse arguments: " + text
