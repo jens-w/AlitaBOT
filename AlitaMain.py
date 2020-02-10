@@ -209,14 +209,14 @@ def parse_queue():
                 if len(queue_item) > 1 and queue_item[1] is not None:
                     target = queue_item[1]
                     sendmsg(msg, target)
-
+                    time.sleep(2)
+                    
                 else:
                     sendmsg(msg)
+                    time.sleep(2)
 
         except Exception:
             pass
-
-        time.sleep(2)
 
 
 def main():
