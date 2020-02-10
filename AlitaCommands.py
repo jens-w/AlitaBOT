@@ -4,7 +4,7 @@ import AlitaCommandConvert
 import importlib
 
 
-modules = {"AlitaCommandConvert", "AlitaGeneralTools"}
+modules = {"AlitaCommandConvert"}
 
 for module in modules:
     importlib.reload(importlib.import_module(module))
