@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+# coding=utf-8
 import socket
 from datetime import datetime
 import threading
 import importlib
+import time
 
 import AlitaCommands
 
@@ -48,6 +50,8 @@ def parse_servermsg(msg):
     reply_or_cmd = ""
     nick = ""
 
+    print(msg)
+
     if msg.find(" ") != -1:
         index = msg.index(" ")
         host = msg[0:index]
@@ -59,7 +63,6 @@ def parse_servermsg(msg):
         msg = msg[index + 1:len(msg)]
 
     if msg.find(" ") != -1:
-        print(msg)
         index = msg.index(" ")
         nick = msg[0:index]
         msg = msg[index + 1:len(msg)]
@@ -73,6 +76,12 @@ def parse_servermsg(msg):
     if reply_or_cmd == "001":
         global connected
         connected = True
+
+    if reply_or_cmd == "221":
+        print(timestamp("user mode: " + msg))
+
+    if (reply_or_cmd == "372") or (reply_or_cmd == "374") or (reply_or_cmd == "375") or (reply_or_cmd == "376"):
+        return
 
     if reply_or_cmd == "MODE":
         print(timestamp("mode: " + msg))
@@ -127,7 +136,7 @@ def parsemsg(msg):
     if msg.find("NOTICE AUTH:") != -1:
         msg = msg.split(':', 1)[1]
 
-    print("\t\t" + timestamp(msg))
+    print(timestamp(msg))
 
 
 def readmsg():
@@ -156,6 +165,7 @@ def main():
     while not connected:
         going = "yes"
 
+    time.sleep(1)
     joinchan(channel)
 
     while not stop:
