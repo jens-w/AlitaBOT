@@ -185,11 +185,13 @@ def readmsg():
                 msg = msg.strip('\n\r')
                 parsemsg(msg)
 
+        # ignore exceptions so we can keep processing
         except Exception:
             pass
 
 
 def add_to_queue(msg, target=None):
+    # [msg, target] is an unordered list, because we want to retain the order for processing
     queue.put([msg, target])
 
 
@@ -210,11 +212,12 @@ def parse_queue():
                     target = queue_item[1]
                     sendmsg(msg, target)
                     time.sleep(2)
-                    
+
                 else:
                     sendmsg(msg)
                     time.sleep(2)
 
+        # ignore exceptions so we can keep processing
         except Exception:
             pass
 
