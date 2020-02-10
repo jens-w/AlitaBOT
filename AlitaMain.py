@@ -196,13 +196,13 @@ def main():
     connect()
 
     while not connected:
-        going = "yes"
+        pass
 
     time.sleep(1)
     joinchan(channel)
 
     while not stop:
-        going = "yes"
+        pass
 
     sendmsg("oh...okay. :'(")
     print(timestamp("quitting"))
