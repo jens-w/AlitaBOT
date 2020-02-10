@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 # coding=utf-8
+
+# my personal IRC bot, only meant to run on one channel, on one network (in my case: #Alita on QuakeNet
+
 import socket
 from datetime import datetime
 import threading
@@ -19,10 +22,12 @@ stop = False
 connected = False
 
 
+# connect to the server and start reading messages
 def connect():
     print(timestamp("connecting"))
     ircsock.connect((server, 6667))
 
+    # continuously read messages
     readmessages = threading.Thread(target=readmsg, daemon=True)
     readmessages.start()
 
@@ -46,6 +51,7 @@ def ping(message):
     ircsock.send(bytes("PONG " + message + "\n", "UTF-8"))
 
 
+# parse server messages/replies
 def parse_servermsg(msg):
     msg = msg.replace(":", "", 1)
     host = ""
@@ -96,6 +102,7 @@ def parse_servermsg(msg):
     print(timestamp(msg))
 
 
+# parse all messages from server
 def parsemsg(msg):
     if msg.find("PING :") != -1:
         message = msg.split(':', 1)[1]
@@ -144,6 +151,7 @@ def parsemsg(msg):
 
             return
 
+    # these should be server replies
     if msg.startswith(":"):
         parse_servermsg(msg)
 
@@ -158,12 +166,14 @@ def readmsg():
     while 1:
         msg = ircsock.recv(2048).decode("UTF-8")
 
+        # multiline messages
         if (msg.find("\n")) or (msg.find("\r")):
             splitlines = msg.splitlines()
 
             for line in splitlines:
                 parsemsg(line)
 
+        # single line messages
         else:
             msg = msg.strip('\n\r')
             parsemsg(msg)
@@ -189,7 +199,7 @@ def main():
     sendmsg("oh...okay. :'(")
     print(timestamp("quitting"))
     ircsock.send(bytes("QUIT \n", "UTF-8"))
-    
+
     return
 
 
