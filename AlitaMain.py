@@ -8,6 +8,7 @@ from datetime import datetime
 import threading
 import importlib
 import time
+from queue import Queue
 
 import AlitaCommands
 
@@ -20,6 +21,7 @@ adminname = "nha"
 exitcode = "bye " + botnick
 stop = False
 connected = False
+queue = Queue(maxsize=5)
 
 
 # connect to the server and start reading messages
@@ -145,12 +147,12 @@ def parsemsg(msg):
                         reply = AlitaCommands.commands[command](name)
 
                     if reply != "" and reply is not None:
-                        sendmsg(reply)
+                        add_to_queue(reply)
 
                 return
 
         if message.find('Hi '.lower() + botnick) != -1:
-            sendmsg("Hello " + name + "!")
+            add_to_queue("Hello " + name + "!")
 
             return
 
@@ -187,9 +189,34 @@ def readmsg():
             pass
 
 
+def add_to_queue(msg, target=None):
+    queue.put([msg, target])
+
+
 def sendmsg(msg, target=channel):
     print(timestamp("sending " + "PRIVMSG " + target + " :" + msg))
     ircsock.send(bytes("PRIVMSG " + target + " :" + msg + "\n", "UTF-8"))
+
+
+def parse_queue():
+    while 1:
+        # noinspection PyBroadException
+        try:
+            if queue.qsize() > 0:
+                queue_item = queue.get()
+                msg = queue_item[0]
+
+                if len(queue_item) > 1 and queue_item[1] is not None:
+                    target = queue_item[1]
+                    sendmsg(msg, target)
+
+                else:
+                    sendmsg(msg)
+
+        except Exception:
+            pass
+
+        time.sleep(2)
 
 
 def main():
@@ -197,6 +224,10 @@ def main():
 
     while not connected:
         pass
+
+    # parse send queue
+    parse_send_queue = threading.Thread(target=parse_queue, daemon=True)
+    parse_send_queue.start()
 
     time.sleep(1)
     joinchan(channel)
