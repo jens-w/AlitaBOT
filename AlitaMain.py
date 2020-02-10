@@ -103,12 +103,16 @@ def parsemsg(msg):
         message = msg.split('PRIVMSG', 1)[1].split(':', 1)[1]
 
         if name.lower() == adminname.lower() and message.rstrip() == "!reload":
+            print(timestamp(msg))
             print(timestamp("reloading commands"))
             importlib.reload(AlitaCommands)
+
+            return
 
         if name.lower() == adminname.lower() and message.rstrip() == exitcode:
             global stop
             stop = True
+
             return
 
         for x in AlitaCommands.command_prefix:
@@ -132,29 +136,17 @@ def parsemsg(msg):
 
         if message.find('Hi '.lower() + botnick) != -1:
             sendmsg("Hello " + name + "!")
+
             return
-
-        if message[:5].find('.tell') != -1:
-            target = message.split(' ', 1)[1]
-
-            if target.find(' ') != -1:
-                message = target.split(' ', 1)[1]
-                target = target.split(' ')[0]
-            else:
-                target = name
-                message = "Could not parse. The message should be in the format of ‘.tell [target] [message]’ to " \
-                          "work properly. "
-
-            sendmsg(message, target)
 
     if msg.startswith(":"):
         parse_servermsg(msg)
+
         return
 
     if msg.find("NOTICE AUTH :") != -1:
         msg = msg.replace("NOTICE AUTH :", "", 1)
-
-    print(timestamp(msg))
+        print(timestamp(msg))
 
 
 def readmsg():
@@ -173,7 +165,7 @@ def readmsg():
 
 
 def sendmsg(msg, target=channel):
-    print(timestamp("sending " + "PRIVMSG " + target + " :" + msg + "\n"))
+    print(timestamp("sending " + "PRIVMSG " + target + " :" + msg))
     ircsock.send(bytes("PRIVMSG " + target + " :" + msg + "\n", "UTF-8"))
 
 

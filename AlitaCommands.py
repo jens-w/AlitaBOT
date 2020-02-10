@@ -1,11 +1,5 @@
 #!/usr/bin/python3
-def convert(name, text):
-    return name + ": convert"
-
-
-def remind(name, text):
-    return name + ": remind"
-
+import AlitaCommandConvert
 
 command_prefix = {"!", "."}
-commands = {"convert": convert, "remind": remind}
+commands = {"convert": AlitaCommandConvert.convert}
