@@ -50,8 +50,6 @@ def parse_servermsg(msg):
     reply_or_cmd = ""
     nick = ""
 
-    print(msg)
-
     if msg.find(" ") != -1:
         index = msg.index(" ")
         host = msg[0:index]
@@ -105,12 +103,32 @@ def parsemsg(msg):
         message = msg.split('PRIVMSG', 1)[1].split(':', 1)[1]
 
         if name.lower() == adminname.lower() and message.rstrip() == "!reload":
+            print(timestamp("reloading commands"))
             importlib.reload(AlitaCommands)
 
         if name.lower() == adminname.lower() and message.rstrip() == exitcode:
             global stop
             stop = True
             return
+
+        for x in AlitaCommands.command_prefix:
+            if message.startswith(x):
+                if message.find(" ") != -1:
+                    command = message[1:message.index(" ")]
+                    text = message[message.index(" "):len(message)]
+                else:
+                    command = message[1:len(message)]
+                    text = ""
+
+                print(timestamp(name + " : " + message))
+
+                if command in AlitaCommands.commands:
+                    reply = AlitaCommands.commands[command](name, text)
+
+                    if reply != "":
+                        sendmsg(reply)
+
+                return
 
         if message.find('Hi '.lower() + botnick) != -1:
             sendmsg("Hello " + name + "!")
@@ -133,8 +151,8 @@ def parsemsg(msg):
         parse_servermsg(msg)
         return
 
-    if msg.find("NOTICE AUTH:") != -1:
-        msg = msg.split(':', 1)[1]
+    if msg.find("NOTICE AUTH :") != -1:
+        msg = msg.replace("NOTICE AUTH :", "", 1)
 
     print(timestamp(msg))
 
