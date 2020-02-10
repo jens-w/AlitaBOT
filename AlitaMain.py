@@ -167,19 +167,24 @@ def parsemsg(msg):
 
 def readmsg():
     while 1:
-        msg = ircsock.recv(2048).decode("UTF-8")
+        # noinspection PyBroadException
+        try:
+            msg = ircsock.recv(2048).decode("UTF-8")
 
-        # multiline messages
-        if (msg.find("\n")) or (msg.find("\r")):
-            splitlines = msg.splitlines()
+            # multiline messages
+            if (msg.find("\n")) or (msg.find("\r")):
+                splitlines = msg.splitlines()
 
-            for line in splitlines:
-                parsemsg(line)
+                for line in splitlines:
+                    parsemsg(line)
 
-        # single line messages
-        else:
-            msg = msg.strip('\n\r')
-            parsemsg(msg)
+            # single line messages
+            else:
+                msg = msg.strip('\n\r')
+                parsemsg(msg)
+
+        except Exception:
+            pass
 
 
 def sendmsg(msg, target=channel):
