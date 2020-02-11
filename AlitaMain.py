@@ -10,7 +10,7 @@ import importlib
 import time
 from queue import Queue
 
-import AlitaCommands
+import modules.AlitaCommands
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server = "irc.quakenet.org"
@@ -120,7 +120,7 @@ def parsemsg(msg):
         if name.lower() == adminname.lower() and message.rstrip() == "!reload":
             print(timestamp(msg))
             print(timestamp("reloading commands"))
-            importlib.reload(AlitaCommands)
+            importlib.reload(modules.AlitaCommands)
 
             return
 
@@ -130,7 +130,7 @@ def parsemsg(msg):
 
             return
 
-        for x in AlitaCommands.command_prefix:
+        for x in modules.AlitaCommands.command_prefix:
             if message.startswith(x):
                 if message.find(" ") != -1:
                     command = message[1:message.index(" ")]
@@ -141,11 +141,11 @@ def parsemsg(msg):
 
                 print(timestamp(name + " : " + message))
 
-                if command in AlitaCommands.commands:
+                if command in modules.AlitaCommands.commands:
                     if text != "" and text is not None:
-                        reply = AlitaCommands.commands[command](name, text)
+                        reply = modules.AlitaCommands.commands[command](name, text)
                     else:
-                        reply = AlitaCommands.commands[command](name)
+                        reply = modules.AlitaCommands.commands[command](name)
 
                     if reply != "" and reply is not None:
                         add_to_queue(reply)
